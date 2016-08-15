@@ -1,19 +1,27 @@
 {
   "name": "isxboxdown",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Command line tool to check Xbox Live status",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "xbox"
+    "xbox",
+    "live",
+    "xbox live"
   ],
-  "author": "chrisjschnabel@gmail.com",
+  "author": "Chris Schnabel",
   "license": "ISC",
+  "engines": {
+    "node": ">=4.4.3"
+  },
   "dependencies": {
     "chalk": "^1.1.3",
     "cheerio": "^0.20.0",
     "request": "^2.72.0"
+  },
+  "bin": {
+    "isxboxdown": "index.js"
   }
 }

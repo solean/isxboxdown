@@ -1,6 +1,8 @@
-var request = require('request');
-var cheerio = require('cheerio');
-var chalk = require('chalk');
+#!/usr/bin/env node
+
+const request = require('request');
+const cheerio = require('cheerio');
+const chalk = require('chalk');
 
 const XBL_STATUS_URL = 'http://support.xbox.com/en-US/xbox-live-status';
 const SERVICES = ['XboxLiveCoreServices', 'PurchaseandContentUsage',
@@ -9,7 +11,7 @@ const SERVICES = ['XboxLiveCoreServices', 'PurchaseandContentUsage',
 
 function getXboxLiveServicesHtml() {
 	return new Promise((resolve, reject) => {
-		request(XBL_STATUS_URL, function(error, response, body) {
+		request(XBL_STATUS_URL, (error, response, body) => {
 			if (!error && response.statusCode == 200) {
 				resolve(body);
 			} else {
@@ -19,18 +21,18 @@ function getXboxLiveServicesHtml() {
 	});
 }
 
-function getServiceStatuses(page) {
+function getServiceStatusesFromHtml(page) {
 	var $ = cheerio.load(page);
 	var output = {};
 
-	SERVICES.map((serviceName) => {
+	SERVICES.map(serviceName => {
 		output[serviceName] = $('#' + serviceName + ' .statusheading span').html()
 	});
 	return output;
 }
 
 function printPrettyServiceStatuses(serviceStatusMap) {
-	var colorStatus = (status) => {
+	var colorStatus = status => {
 		var output = status;
 		switch(status) {
 			case 'Normal':
@@ -49,18 +51,31 @@ function printPrettyServiceStatuses(serviceStatusMap) {
 		return output;
 	};
 
-	Object.keys(serviceStatusMap).forEach((service) => {
+	Object.keys(serviceStatusMap).forEach(service => {
 		console.log(chalk.bold(service) + ': ' + colorStatus(serviceStatusMap[service]));
 	});
 }
 
-function main() {
-	getXboxLiveServicesHtml().then(function(html) {
-		var services = getServiceStatuses(html);
-		printPrettyServiceStatuses(services);
-	}).catch(function(error) {
-		console.log(error);
+function getServiceStatuses() {
+	return new Promise((resolve, reject) => {
+		getXboxLiveServicesHtml().then(html => {
+			resolve(getServiceStatusesFromHtml(html));
+		}).catch(error => {
+			reject('Sorry, an error occurred:\n' + '"' + error + '"');
+		})
 	});
 }
 
+
+function main() {
+	getServiceStatuses().then(services => {
+		printPrettyServiceStatuses(services);
+	}).catch(error => {
+		console.log(error);
+	})
+}
+
+module.exports.getServiceStatuses = getServiceStatuses;
+
 main();
+
