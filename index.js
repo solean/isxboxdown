@@ -2,7 +2,7 @@
 
 const request = require('request');
 const cheerio = require('cheerio');
-const printUtils = require('./utils');
+const utils = require('./utils');
 
 const XBL_STATUS_URL = 'http://support.xbox.com/en-US/xbox-live-status';
 const SERVICE_NAMES = ['Xbox Live Core Services',
@@ -49,7 +49,7 @@ function getServiceStatuses() {
 
 function main() {
 	getServiceStatuses().then(services => {
-		printUtils.printPrettyServiceStatuses(services);
+		utils.printPrettyServiceStatuses(services);
 	}).catch(error => {
 		console.log(error);
 	})
