@@ -32,14 +32,17 @@ function printPrettyServiceStatuses(serviceStatusMap) {
     return output;
   };
 
-  console.log('\n| Service Name                | Status |');
-  console.log('|-----------------------------|--------|');
+  var output = '\n| Service Name                | Status |\n'
+    + '|-----------------------------|--------|\n';
+
   Object.keys(serviceStatusMap).forEach(service => {
-    var outputRow = '| ' + chalk.bold(service) + getNumSpaces(service.length) +
-      '| ' + colorStatus(serviceStatusMap[service]) + ' |';
-    console.log(outputRow);
+    var boldService = chalk.bold(service);
+    var spaces = getNumSpaces(service.length);
+    var status = colorStatus(serviceStatusMap[service]);
+    output += `| ${boldService}${spaces}| ${status} |\n`;
   });
-  console.log('\n');
+
+  console.log(output);
 }
 
 module.exports.printPrettyServiceStatuses = printPrettyServiceStatuses;
